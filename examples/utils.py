@@ -3,7 +3,7 @@ from time import sleep
 from typing import Iterable, List
 
 from tomotoio.cube import Cube
-from tomotoio.data import Light, Note
+from tomotoio.data import Light, Note, ToioIDType, AngleType, MagneticSenseType, NotifyType, TiltEuler, TiltQuaternion, MagneticForce
 from tomotoio.factory import createCubesFromFile
 from tomotoio.navigator import Navigator
 

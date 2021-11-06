@@ -52,7 +52,7 @@ class Cube:
         self.name = name
         self.listeners: Dict[int, List[CubeListenerFunc]] = defaultdict(lambda: list())
         self.toioID = ReadableProperty[Union[PositionID, StandardID, MissedID]](self, UUIDs.TOIO_ID, decodeToioID)
-        self.motion = ReadableProperty[Motion](self, UUIDs.MOTION, decodeMotion)
+        self.motion = ReadableProperty[Union[Motion, MagneticForce, TiltEuler, TiltQuaternion]](self, UUIDs.MOTION, decodeMotion)
         self.button = ReadableProperty[bool](self, UUIDs.BUTTON, decodeButton)
         self.battery = ReadableProperty[int](self, UUIDs.BATTERY, decodeBattery)
         self.motor = ReadableProperty[Motor](self, UUIDs.MOTOR, decodeMotor)
@@ -76,7 +76,7 @@ class Cube:
             e = decodeButton(data)
         elif uuid == UUIDs.TOIO_ID:
             e = decodeToioID(data)
-         elif uuid == UUIDs.MOTOR:
+        elif uuid == UUIDs.MOTOR:
             e = decodeMotor(data)
         else:
             e = data
@@ -130,3 +130,18 @@ class Cube:
 
     def setConfigDoubleTapTiming(self, value: int):
         self._write(UUIDs.CONFIG, encodeConfigDoubleTapTiming(value))
+
+    def setConfigToioIDNotify(self, duration: int, condition):
+        self._write(UUIDs.CONFIG, encodeConfigToioIDNotify(duration, condition))
+
+    def setConfigToioIDMissedNotify(self, delay):
+        self._write(UUIDs.CONFIG, encodeConfigToioIDMissedNotify(delay))
+
+    def setConfigMagneticSensor(self, capability, duration, condition):
+        self._write(UUIDs.CONFIG, encodeConfigMagneticSensor(capability, duration, condition))
+
+    def setConfigMotorSpeedNotify(self, enable):
+        self._write(UUIDs.CONFIG, encodeMotorSpeedNotify(enable))
+    
+    def setConfigHighPrecisionTiltSensor(self, type, duration, condition):
+        self._write(UUIDs.CONFIG, encodeConfigHighPrecisionTiltSensor(type, duration, condition))

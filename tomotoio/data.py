@@ -1,4 +1,4 @@
-from enum import Enum
+from enum import Enum, IntEnum
 
 
 class ToioIDType(Enum):
@@ -58,11 +58,12 @@ class Orientation(Enum):
     LEFT_UP = 6
 
 class Motion:
-    def __init__(self, isLevel: bool, collision: bool, doubleTap: bool, orientation: Orientation):
+    def __init__(self, isLevel: bool, collision: bool, doubleTap: bool, orientation: Orientation, shake: int):
         self.isLevel = isLevel
         self.collision = collision
         self.doubleTap = doubleTap
         self.orientation = orientation
+        self.shake = shake
 
     def __str__(self):
         return str(vars(self))
@@ -91,3 +92,52 @@ class Motor:
         self.result = result
     def __str__(self):
         return str(vars(self))
+
+
+class TiltEuler:
+    def __init__(self, roll: int, pitch: int, yaw: int):
+        self.roll = roll
+        self.pitch = pitch
+        self.yaw = yaw
+    def __str__(self):
+        return str(vars(self))
+
+
+class TiltQuaternion:
+    def __init__(self, w: int, x: int, y: int, z: int):
+        self.w = w
+        self.x = x
+        self.y = y
+        self.z = z
+    def __str__(self):
+        return str(vars(self))
+
+
+class MagneticForce:
+    def __init__(self, status: int, strength: int ,x: int, y: int, z: int):
+        self.status = status
+        self.strength = strength
+        self.x = x
+        self.y = y
+        self.z = z
+    def __str__(self):
+        return str(vars(self))
+
+
+class AngleType(IntEnum):
+    DISABLE = 0
+    EULER = 1
+    QUATERNION = 2
+
+
+class MagneticSenseType(IntEnum):
+    DISABLE = 0
+    STATUS = 1
+    FORCE = 2
+
+
+class NotifyType(IntEnum):
+    PERIODIC = 0
+    CHANGED = 1
+    CHANGED_OR_300MS = 0xff
+    

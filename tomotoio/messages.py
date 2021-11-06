@@ -34,8 +34,18 @@ def decodeMotion(data: bytes) -> Motion:
             (_, isLevel, collision) = unpack("<BBB", data)
             return Motion(isLevel != 0, collision != 0, False, Orientation.INVALID)
         else:
-            (_, isLevel, collision, doubleTap, orientation) = unpack("<BBBBB", data)
-            return Motion(isLevel != 0, collision != 0, doubleTap != 0, Orientation(orientation))
+            (_, isLevel, collision, doubleTap, orientation, shake) = unpack("<BBBBBB", data)
+            return Motion(isLevel != 0, collision != 0, doubleTap != 0, Orientation(orientation), shake)
+    if data[0] == 0x02:
+        (_, status, strength, x, y, z) = unpack("<BBBbbb", data)
+        return MagneticForce(status, strength, x, y, z)
+    if data[0] == 0x03:
+        if data[1] == 0x01:
+            (_, angleType, roll, pitch, yaw) = unpack("<BBhhh", data)
+            return TiltEuler(roll, pitch, yaw)
+        if data[1] == 0x02:
+            (_, angleType, w, x, y, z) = unpack("<BBhhhh", data)
+            return TiltQuaternion(w, x, y, z)
 
     raise _wrongBytesError(data)
 
@@ -150,5 +160,27 @@ def encodeConfigLevelThreshold(angle: int = 45) -> bytes:
 def encodeConfigCollisionThreshold(value: int = 7) -> bytes:
     return bytes([6, 0, min(value, 10)])
 
+
 def encodeConfigDoubleTapTiming(value: int = 5) -> bytes:
     return bytes([0x17, 0, min(value, 7)])
+
+
+def encodeConfigToioIDNotify(duration: float = 0.1, condition: int = 0xff) -> bytes:
+    return bytes([0x18, 0, min(int(duration * 100), 255), condition])
+
+
+def encodeConfigToioIDMissedNotify(delay: float = 0.7) -> bytes:
+    return bytes([0x19, 0, min(int(delay * 100), NotifyType.CHANGEDOR300MS)])
+
+
+def encodeConfigMagneticSensor(capability: int = MagneticSenseType.DISABLE, duration: float = 0, condition: int = NotifyType.CHANGED) -> bytes:
+    return bytes([0x1b, 0, capability,
+                  min(int(duration * 50), 255), condition])
+
+
+def encodeConfigMotorSpeedNotify(enable: int = 1) -> bytes:
+    return bytes([0x1c, 0, min(enable, 1)])
+
+
+def encodeConfigHighPrecisionTiltSensor(type: int = AngleType.EULER, duration: float = 0, condition = NotifyType.CHANGED) -> bytes:
+    return bytes([0x1d, 0, type, min(int(duration * 100), 255), condition])
