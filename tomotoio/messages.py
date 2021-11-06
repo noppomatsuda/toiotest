@@ -55,11 +55,53 @@ def decodeBattery(data: bytes) -> int:
 def _motorDirection(value: int) -> int:
     return 1 if value >= 0 else 2
 
+def decodeMotor(data: bytes) -> Motor:
+    if len(data) == 3:
+        return(Motor(data[0], data[1], data[2]))
+    raise _wrongBytesError(data)
 
 def encodeMotor(left: int, right: int, duration: float = 0) -> bytes:
     d = min(int(duration * 100), 255)
     return bytes([2, 1, _motorDirection(left), abs(left), 2, _motorDirection(right), abs(right), d])
 
+def encodeMotorTarget(ctrlid: int, x: int, y: int, timeout: int = 0, movingtype: int = 0, maxspeed: int = 0, speedtype: int = 0,  angletype: int = 5, deg: int = 0) -> bytes:
+    id = min(ctrlid, 255)
+    t = min(timeout, 255)
+    mt = min(movingtype, 2)
+    ms = min(maxspeed, 255)
+    st = min(speedtype, 3)
+    a = (angletype << 13) | (deg & 0x1ffff)
+    return bytes([3, id, t, mt, ms, st, 0]) + x.to_bytes(2, 'little') + y.to_bytes(2, 'little') + a.to_bytes(2, 'little')
+
+def encodeMotorMultipleTargets(ctrlid: int, goals, writemode: int = 0,  timeout: int = 0, movingtype: int = 0, maxspeed: int = 0, speedtype: int = 0) -> bytes:
+    id = min(ctrlid, 255)
+    wm = min(writemode, 1)
+    t = min(timeout, 255)
+    mt = min(movingtype, 2)
+    ms = min(maxspeed, 255)
+    st = min(speedtype, 3)
+    goallist = bytes()
+    for goal in goals:
+        x = goal[0]
+        y = goal[1]
+        angletype = goal[2]
+        deg = goal[3]
+        a = (angletype << 13) | (deg & 0x1ffff)
+        goallist = goallist + x.to_bytes(2, 'little') + y.to_bytes(2, 'little') + a.to_bytes(2, 'little')
+        if len(goallist) > 29:
+            print('too many goal positions')
+            return 0
+    return bytes([4, id, t, mt, ms, st, 0, wm]) + goallist
+
+def encodeMotorAcceleration(transspeed: int, transaccel: int,  turnspeed: int, turndirection: int, traveldirection: int = 0, priority:int = 0, duration: float = 0) -> bytes:
+    ts = min(transspeed, 115)
+    ta = min(transaccel, 255)
+    tns = min(turnspeed, 65535)
+    tnd = min(turndirection, 1)
+    trvd = min(traveldirection, 1)
+    d = min(int(duration * 100), 255)
+    p = min(priority, 1)
+    return bytes([5, ts, ta]) + tns.to_bytes(2, 'little') + bytes([tnd, trvd, p, d])
 
 def encodeLight(r: int, g: int, b: int, duration: float = 0) -> bytes:
     return bytes([3, min(int(duration * 100), 255), 1, 1, r, g, b])

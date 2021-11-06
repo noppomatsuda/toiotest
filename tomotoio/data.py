@@ -83,3 +83,11 @@ class Note:
         self.noteNumber = noteNumber
         self.duration = duration
         self.volume = volume
+
+class Motor:
+    def __init__(self, ctrltype: int, ctrlid: int, result: int):
+        self.type = ctrltype
+        self.id = ctrlid
+        self.result = result
+    def __str__(self):
+        return str(vars(self))

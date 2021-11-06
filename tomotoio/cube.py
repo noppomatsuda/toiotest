@@ -55,6 +55,7 @@ class Cube:
         self.motion = ReadableProperty[Motion](self, UUIDs.MOTION, decodeMotion)
         self.button = ReadableProperty[bool](self, UUIDs.BUTTON, decodeButton)
         self.battery = ReadableProperty[int](self, UUIDs.BATTERY, decodeBattery)
+        self.motor = ReadableProperty[Motor](self, UUIDs.MOTOR, decodeMotor)
 
         peer.addListener(self._handleNotification)
 
@@ -75,6 +76,8 @@ class Cube:
             e = decodeButton(data)
         elif uuid == UUIDs.TOIO_ID:
             e = decodeToioID(data)
+         elif uuid == UUIDs.MOTOR:
+            e = decodeMotor(data)
         else:
             e = data
 
@@ -95,8 +98,20 @@ class Cube:
     def setMotor(self, left: float, right: float, duration: float = 0):
         self._write(UUIDs.MOTOR, encodeMotor(int(left), int(right), duration))
 
+    def setMotorWithTarget(self, ctrlid: int, x: int, y: int, timeout: int = 0, movingtype: int = 0, maxspeed: int = 8, speedtype: int = 0, angletype: int = 5, deg: int = 0):
+      self._write(UUIDs.MOTOR, encodeMotorTarget(ctrlid, x, y, timeout, movingtype, maxspeed, speedtype, angletype, deg))
+
+    def setMotorWithMultipleTargets(self, ctrlid: int, goals, writemode:int, timeout: int = 0, movingtype: int = 0, maxspeed: int = 0, speedtype: int =0):
+        self._write(UUIDs.MOTOR, encodeMotorMultipleTargets(ctrlid, goals, writemode, timeout, movingtype, maxspeed, speedtype))
+
+    def setMotorWithAcceleration(self, transspeed: int, transaccel: int, turnspeed: int, turndirection: int, traveldirection: int = 0, priority:int = 0, duration: float = 0):
+        self._write(UUIDs.MOTOR, encodeMotorAcceleration(transspeed, transaccel, turnspeed, turndirection, traveldirection, priority, duration))
+
     def setLight(self, r: int, g: int, b: int, duration: float = 0):
         self._write(UUIDs.LIGHT, encodeLight(r, g, b, duration))
+
+   def setLightOff(self):
+        self._write(UUIDs.LIGHT, encodeLightOff())
 
     def setLightPattern(self, lights: List[Light], repeat: int = 0):
         self._write(UUIDs.LIGHT, encodeLightPattern(lights, repeat))
