@@ -28,7 +28,7 @@ class DebugScanDelegate(DefaultDelegate):
 def scanCubes(timeout: float, iface: int = 0) -> List[str]:
     result = list()
     scanner = Scanner(iface).withDelegate(DebugScanDelegate())
-    devices = scanner.scan(timeout)
+    devices = scanner.scan(timeout, passive=True)
     for dev in devices:
         for (adtype, desc, value) in dev.getScanData():
             if adtype == 0x07 and UUID(value) == UUIDs.SERVICE:
