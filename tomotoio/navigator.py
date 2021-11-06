@@ -24,6 +24,11 @@ class Mat:
         self.bottomRight = Vector(455 + matType.value * 500, 455)
         self.center = self.topLeft.interpolate(self.bottomRight, 0.5)
 
+    def setRect(self, left:float, top:float, right:float, bottom:float):
+        self.topLeft = Vector(left, top)
+        self.bottomRight = Vector(right, bottom)
+        self.center = self.topLeft.interpolate(self.bottomRight, 0.5)
+
     def margin(self, x: float, y: float) -> float:
         return min(x - self.topLeft.x, y - self.topLeft.y, self.bottomRight.x - x, self.bottomRight.y - y)
 
