@@ -141,3 +141,51 @@ class NotifyType(IntEnum):
     CHANGED = 1
     CHANGED_OR_300MS = 0xff
     
+
+class MovementType(IntEnum):
+    ROTATING = 0
+    ROTATING_WITHOUT_BACKWARD = 1
+    ROTATING_AFTER_MOVING = 2
+
+
+class SpeedChangeType(IntEnum):
+    CONSTANT = 0
+    INCREASE = 1
+    DECREASE = 2
+    INCRESE_DECREASE = 3
+
+
+class TargetPointAngleType(IntEnum):
+    ABSOLUTE = 0
+    ABSOLUTE_FORWARD = 1
+    ABSOLUTE_NEGATIVE = 1
+    RELATIVE_FORWARD = 3
+    RELATIVE_NEGATIVE = 4
+    NO_ROTATION = 5
+    SAME_AS_WRITE_OPERATION = 6
+
+
+class DirectionType(IntEnum):
+    FORWARD = 0
+    BACKWARD = 1
+
+
+class SpeedPriorityType(IntEnum):
+    TRANSITION = 0
+    ROTATION = 1
+
+
+class AdditionalWriteSettingType(IntEnum):
+    OVERWRITE = 0
+    ADD = 1
+
+
+class MotorResult(IntEnum):
+    SUCCESS = 0
+    TIMEOUT = 1
+    TOIO_ID_MISSED = 2
+    INVALID_PARAMS = 3
+    INVALID_STATE = 4
+    OTHER_CONTROL_ACCEPTED = 5
+    NOT_SUPPORTED = 6
+    

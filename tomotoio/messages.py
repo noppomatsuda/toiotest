@@ -83,9 +83,9 @@ def encodeMotorTarget(ctrlid: int, x: int, y: int, timeout: int = 0, movingtype:
     a = (angletype << 13) | (deg & 0x1ffff)
     return bytes([3, id, t, mt, ms, st, 0]) + x.to_bytes(2, 'little') + y.to_bytes(2, 'little') + a.to_bytes(2, 'little')
 
-def encodeMotorMultipleTargets(ctrlid: int, goals, writemode: int = 0,  timeout: int = 0, movingtype: int = 0, maxspeed: int = 0, speedtype: int = 0) -> bytes:
+def encodeMotorMultipleTargets(ctrlid: int, goals, addwritemode: int = 0,  timeout: int = 0, movingtype: int = 0, maxspeed: int = 0, speedtype: int = 0) -> bytes:
     id = min(ctrlid, 255)
-    wm = min(writemode, 1)
+    wm = min(addwritemode, 1)
     t = min(timeout, 255)
     mt = min(movingtype, 2)
     ms = min(maxspeed, 255)

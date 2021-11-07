@@ -98,13 +98,13 @@ class Cube:
     def setMotor(self, left: float, right: float, duration: float = 0):
         self._write(UUIDs.MOTOR, encodeMotor(int(left), int(right), duration))
 
-    def setMotorWithTarget(self, ctrlid: int, x: int, y: int, timeout: int = 0, movingtype: int = 0, maxspeed: int = 8, speedtype: int = 0, angletype: int = 5, deg: int = 0):
+    def setMotorWithTarget(self, ctrlid: int, x: int, y: int, timeout: int = 0, movingtype: int = MovementType.ROTATING, maxspeed: int = 10, speedtype: int = SpeedChangeType.CONSTANT, angletype: int = TargetPointAngleType.NO_ROTATION, deg: int = 0):
       self._write(UUIDs.MOTOR, encodeMotorTarget(ctrlid, x, y, timeout, movingtype, maxspeed, speedtype, angletype, deg))
 
-    def setMotorWithMultipleTargets(self, ctrlid: int, goals, writemode:int, timeout: int = 0, movingtype: int = 0, maxspeed: int = 0, speedtype: int =0):
-        self._write(UUIDs.MOTOR, encodeMotorMultipleTargets(ctrlid, goals, writemode, timeout, movingtype, maxspeed, speedtype))
+    def setMotorWithMultipleTargets(self, ctrlid: int, goals, addwritemode:int = AdditionalWriteSettingType.OVERWRITE, timeout: int = 0, movingtype: int = MovementType.ROTATING, maxspeed: int = 10, speedtype: int = SpeedChangeType.CONSTANT):
+        self._write(UUIDs.MOTOR, encodeMotorMultipleTargets(ctrlid, goals, addwritemode, timeout, movingtype, maxspeed, speedtype))
 
-    def setMotorWithAcceleration(self, transspeed: int, transaccel: int, turnspeed: int, turndirection: int, traveldirection: int = 0, priority:int = 0, duration: float = 0):
+    def setMotorWithAcceleration(self, transspeed: int, transaccel: int, turnspeed: int, turndirection: int = DirectionType.FORWARD, traveldirection: int = DirectionType.FORWARD, priority:int = SpeedPriorityType.TRANSITION, duration: float = 0):
         self._write(UUIDs.MOTOR, encodeMotorAcceleration(transspeed, transaccel, turnspeed, turndirection, traveldirection, priority, duration))
 
     def setLight(self, r: int, g: int, b: int, duration: float = 0):
@@ -140,8 +140,8 @@ class Cube:
     def setConfigMagneticSensor(self, capability, duration, condition):
         self._write(UUIDs.CONFIG, encodeConfigMagneticSensor(capability, duration, condition))
 
-    def setConfigMotorSpeedNotify(self, enable):
-        self._write(UUIDs.CONFIG, encodeMotorSpeedNotify(enable))
+    def setConfigMotorSpeedNotify(self, enable = 1):
+        self._write(UUIDs.CONFIG, encodeConfigMotorSpeedNotify(enable))
     
     def setConfigHighPrecisionTiltSensor(self, type, duration, condition):
         self._write(UUIDs.CONFIG, encodeConfigHighPrecisionTiltSensor(type, duration, condition))
