@@ -110,7 +110,7 @@ class Cube:
     def setLight(self, r: int, g: int, b: int, duration: float = 0):
         self._write(UUIDs.LIGHT, encodeLight(r, g, b, duration))
 
-   def setLightOff(self):
+    def setLightOff(self):
         self._write(UUIDs.LIGHT, encodeLightOff())
 
     def setLightPattern(self, lights: List[Light], repeat: int = 0):

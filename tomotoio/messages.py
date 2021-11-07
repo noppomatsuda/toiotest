@@ -182,5 +182,5 @@ def encodeConfigMotorSpeedNotify(enable: int = 1) -> bytes:
     return bytes([0x1c, 0, min(enable, 1)])
 
 
-def encodeConfigHighPrecisionTiltSensor(type: int = AngleType.EULER, duration: float = 0, condition = NotifyType.CHANGED) -> bytes:
+def encodeConfigHighPrecisionTiltSensor(type: int = PostureType.EULER, duration: float = 0, condition = NotifyType.CHANGED) -> bytes:
     return bytes([0x1d, 0, type, min(int(duration * 100), 255), condition])

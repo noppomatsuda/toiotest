@@ -124,7 +124,7 @@ class MagneticForce:
         return str(vars(self))
 
 
-class AngleType(IntEnum):
+class PostureType(IntEnum):
     DISABLE = 0
     EULER = 1
     QUATERNION = 2
@@ -132,7 +132,7 @@ class AngleType(IntEnum):
 
 class MagneticSenseType(IntEnum):
     DISABLE = 0
-    STATUS = 1
+    STATE = 1
     FORCE = 2
 
 
