@@ -19,7 +19,7 @@ class ToioID:
         return self.type == ToioIDType.STANDARD
 
     def isMissed(self):
-        return self.type == ToioIDType.MISSED
+        return self.type == ToioIDType.POSITION_MISSED
 
     def __str__(self):
         return str(vars(self))
@@ -90,6 +90,15 @@ class Motor:
         self.type = ctrltype
         self.id = ctrlid
         self.result = result
+    def __str__(self):
+        return str(vars(self))
+
+
+class MotorSpeed:
+    def __init__(self, ctrltype: int, left: int, right: int):
+        self.type = ctrltype
+        self.left = left
+        self.right = right
     def __str__(self):
         return str(vars(self))
 
@@ -188,4 +197,10 @@ class MotorResult(IntEnum):
     INVALID_STATE = 4
     OTHER_CONTROL_ACCEPTED = 5
     NOT_SUPPORTED = 6
-    
+
+
+class MotorInfoType(IntEnum):
+    WITH_TARGET = 0x83
+    WITH_MULTIPLE_TARGETS = 0x84
+    SPEED = 0xe0
+

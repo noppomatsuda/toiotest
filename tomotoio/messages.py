@@ -65,9 +65,12 @@ def decodeBattery(data: bytes) -> int:
 def _motorDirection(value: int) -> int:
     return 1 if value >= 0 else 2
 
-def decodeMotor(data: bytes) -> Motor:
+def decodeMotor(data: bytes) -> Union[Motor, MotorSpeed]:
     if len(data) == 3:
-        return(Motor(data[0], data[1], data[2]))
+        if data[0] == MotorInfoType.SPEED:
+            return(MotorSpeed(data[0], data[1], data[2]))
+        else:
+            return(Motor(data[0], data[1], data[2]))
     raise _wrongBytesError(data)
 
 def encodeMotor(left: int, right: int, duration: float = 0) -> bytes:
