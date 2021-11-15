@@ -25,6 +25,6 @@ This runs on Linux with Python 3.6 or later. I am personally running this on Ras
 * funmouse.py: Cube #1 works as a mouse, but be careful as it moves when you don't want! (https://youtu.be/EzOJ5VRSIUI)
 * motor_with_target.py: Cube #1 moves to target position.
 * motor_with_multiple_targets.py: Cube #1 moves to multiple target position.
-# motor_with_acceleation.py: Cube #1 moves with acceleration change.
+* motor_with_acceleation.py: Cube #1 moves with acceleration change.
 * notifications_mag_posture.py: Outputs the notifications (magnetic sensor and posture) to the console.
 * tilt.py: Control Cube #2 by tilting Cube #1.
