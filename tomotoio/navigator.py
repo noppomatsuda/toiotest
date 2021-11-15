@@ -1,5 +1,5 @@
 import logging as log
-from enum import Enum
+from enum import Enum 
 from math import atan2, cos, degrees, hypot, radians, sin
 from threading import RLock
 from typing import Optional, Tuple, cast
@@ -9,19 +9,67 @@ from .data import PositionID
 from .geo import *
 
 MILLIS_PER_UNIT = 560.0 / 410.0
-AXLE_TRACK_UNITS = 26.6 / MILLIS_PER_UNIT
+AXLE_TRACK_UNITS = 26.6/ MILLIS_PER_UNIT
 MOTOR_DURATION = 1.5
 
 
 class MatType(Enum):
     TOIO_COLLECTION_1 = 0
     TOIO_COLLECTION_2 = 1
-
+    GESUNDROID = 2
+    PICOTONS_PLAY_MAT_1 = 3
+    PICOTONS_PLAY_MAT_2 = 4
+    PICOTONS_CONTROL_MAT = 5
+    PICOTONS_AUTOPLAY_MAT = 6
+    SIMPLE_PLAY_MAT = 7
+    DEVELOPPERS_PLAY_MAT_01 = 10
+    DEVELOPPERS_PLAY_MAT_02 = 11
+    DEVELOPPERS_PLAY_MAT_03 = 12
+    DEVELOPPERS_PLAY_MAT_04 = 13
+    DEVELOPPERS_PLAY_MAT_05 = 14
+    DEVELOPPERS_PLAY_MAT_06 = 15
+    DEVELOPPERS_PLAY_MAT_07 = 16
+    DEVELOPPERS_PLAY_MAT_08 = 17
+    DEVELOPPERS_PLAY_MAT_09 = 18
+    DEVELOPPERS_PLAY_MAT_10 = 19
+    DEVELOPPERS_PLAY_MAT_11 = 20
+    DEVELOPPERS_PLAY_MAT_12 = 21
 
 class Mat:
     def __init__(self, matType: MatType = MatType.TOIO_COLLECTION_1):
-        self.topLeft = Vector(45 + matType.value * 500, 45)
-        self.bottomRight = Vector(455 + matType.value * 500, 455)
+        if (matType == MatType.TOIO_COLLECTION_1) or (matType == MatType.TOIO_COLLECTION_2):
+            self.topLeft = Vector(45 + matType.value * 500, 45)
+            self.bottomRight = Vector(455 + matType.value * 500, 455)
+        elif matType == MatType.GESUNDROID:
+            self.topLeft = Vector(1050, 45)
+            self.bottomRight = Vector(1460, 455) 
+        elif matType == MatType.PICOTONS_PLAY_MAT_1:
+            self.topLeft = Vector(59, 2088)
+            self.bottomRight = Vector(437, 2285) 
+        elif matType == MatType.PICOTONS_PLAY_MAT_2:
+            self.topLeft = Vector(59, 2303)
+            self.bottomRight = Vector(437, 2499) 
+        elif matType == MatType.PICOTONS_CONTROL_MAT:
+            self.topLeft = Vector(764, 2093)
+            self.bottomRight = Vector(953, 2290) 
+        elif matType == MatType.PICOTONS_AUTOPLAY_MAT:
+            self.topLeft = Vector(554, 2093)
+            self.bottomRight = Vector(742, 2290) 
+        elif matType == MatType.SIMPLE_PLAY_MAT:
+            self.topLeft = Vector(98, 142)
+            self.bottomRight = Vector(402, 358) 
+        elif (matType >= MatType.DEVELOPPERS_PLAY_MAT_01) and (matType <= MatType.DEVELOPPERS_PLAY_MAT_04):
+            self.topLeft = Vector(34, 35 + (matType.value - MatType.DEVELOPPERS_PLAY_MAT_01) * 216)
+            self.bottomRight = Vector(339, (matType.value - MatType.DEVELOPPERS_PLAY_MAT_01) * 216)
+        elif (matType >= MatType.DEVELOPPERS_PLAY_MAT_05) and (matType <= MatType.DEVELOPPERS_PLAY_MAT_08):
+            self.topLeft = Vector(340, 35 + (matType.value - MatType.DEVELOPPERS_PLAY_MAT_01) * 216)
+            self.bottomRight = Vector(644, (matType.value - MatType.DEVELOPPERS_PLAY_MAT_01) * 216)
+        elif (matType >= MatType.DEVELOPPERS_PLAY_MAT_05) and (matType <= MatType.DEVELOPPERS_PLAY_MAT_08):
+            self.topLeft = Vector(645, 35 + (matType.value - MatType.DEVELOPPERS_PLAY_MAT_01) * 216)
+            self.bottomRight = Vector(949, (matType.value - MatType.DEVELOPPERS_PLAY_MAT_01) * 216)
+        else:  # simple play mat
+            self.topLeft = Vector(98, 142)
+            self.bottomRight = Vector(402, 358) 
         self.center = self.topLeft.interpolate(self.bottomRight, 0.5)
 
     def setRect(self, left:float, top:float, right:float, bottom:float):

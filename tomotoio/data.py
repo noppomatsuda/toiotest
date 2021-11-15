@@ -90,6 +90,7 @@ class Motor:
         self.type = ctrltype
         self.id = ctrlid
         self.result = result
+
     def __str__(self):
         return str(vars(self))
 
@@ -99,6 +100,7 @@ class MotorSpeed:
         self.type = ctrltype
         self.left = left
         self.right = right
+
     def __str__(self):
         return str(vars(self))
 
@@ -108,6 +110,7 @@ class TiltEuler:
         self.roll = roll
         self.pitch = pitch
         self.yaw = yaw
+
     def __str__(self):
         return str(vars(self))
 
@@ -118,6 +121,7 @@ class TiltQuaternion:
         self.x = x
         self.y = y
         self.z = z
+
     def __str__(self):
         return str(vars(self))
 
@@ -129,6 +133,7 @@ class MagneticForce:
         self.x = x
         self.y = y
         self.z = z
+
     def __str__(self):
         return str(vars(self))
 
@@ -172,6 +177,17 @@ class TargetPointAngleType(IntEnum):
     RELATIVE_NEGATIVE = 4
     NO_ROTATION = 5
     SAME_AS_WRITE_OPERATION = 6
+
+
+class Target:
+    def __init__(self, x: int, y: int, angletype: TargetPointAngleType = TargetPointAngleType.NO_ROTATION, deg: int = 0):
+        self.x = x
+        self.y = y
+        self.angletype = angletype
+        self.deg = deg
+
+    def __str__(self):
+        return str(vars(self))
 
 
 class DirectionType(IntEnum):

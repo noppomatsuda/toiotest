@@ -4,7 +4,7 @@ from functools import partial
 from time import sleep
 
 from utils import createCubes, releaseCubes, Cube
-from utils import MagneticSenseType, AngleType, NotifyType
+from utils import MagneticSenseType, PostureType, NotifyType
 from utils import TiltEuler
 
 cubes = createCubes()
@@ -27,7 +27,7 @@ try:
     cubes[0].motion.enableNotification()
 
 #    cubes[0].setConfigMagneticSensor(MagneticSenseType.FORCE, 0.5, NotifyType.CHANGED)
-    cubes[0].setConfigHighPrecisionTiltSensor(AngleType.EULER, 0.1, NotifyType.PERIODIC)
+    cubes[0].setConfigHighPrecisionTiltSensor(PostureType.EULER, 0.1, NotifyType.PERIODIC)
     prev_yaw = yaw
     while True:
         log.debug("%s, %s, %s", roll, pitch, yaw)

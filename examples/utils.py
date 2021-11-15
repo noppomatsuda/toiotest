@@ -5,7 +5,7 @@ from typing import Iterable, List
 from tomotoio.cube import Cube
 from tomotoio.data import Light, Note, ToioIDType, PostureType, MagneticSenseType, NotifyType, TiltEuler, TiltQuaternion, MagneticForce
 from tomotoio.data import MovementType, SpeedChangeType, TargetPointAngleType, DirectionType, SpeedPriorityType, AdditionalWriteSettingType
-from tomotoio.data import MotorResult, MotorInfoType
+from tomotoio.data import Target, MotorResult, MotorInfoType
 from tomotoio.factory import createCubesFromFile
 from tomotoio.navigator import Navigator
 

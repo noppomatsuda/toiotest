@@ -86,25 +86,23 @@ def encodeMotorTarget(ctrlid: int, x: int, y: int, timeout: int = 0, movingtype:
     a = (angletype << 13) | (deg & 0x1ffff)
     return bytes([3, id, t, mt, ms, st, 0]) + x.to_bytes(2, 'little') + y.to_bytes(2, 'little') + a.to_bytes(2, 'little')
 
-def encodeMotorMultipleTargets(ctrlid: int, goals, addwritemode: int = 0,  timeout: int = 0, movingtype: int = 0, maxspeed: int = 0, speedtype: int = 0) -> bytes:
+def encodeMotorMultipleTargets(ctrlid: int, goals:List[Target], addwritemode: int = 0,  timeout: int = 0, movingtype: int = 0, maxspeed: int = 0, speedtype: int = 0) -> bytes:
+    if len(goals) > 29:
+        print('too many goal positions')
+        return 0
     id = min(ctrlid, 255)
     wm = min(addwritemode, 1)
     t = min(timeout, 255)
     mt = min(movingtype, 2)
     ms = min(maxspeed, 255)
     st = min(speedtype, 3)
-    goallist = bytes()
+    b = list([4, id, t, mt, ms, st, 0, wm])
     for goal in goals:
-        x = goal[0]
-        y = goal[1]
-        angletype = goal[2]
-        deg = goal[3]
+        angletype = goal.angletype
+        deg = goal.deg
         a = (angletype << 13) | (deg & 0x1ffff)
-        goallist = goallist + x.to_bytes(2, 'little') + y.to_bytes(2, 'little') + a.to_bytes(2, 'little')
-        if len(goallist) > 29:
-            print('too many goal positions')
-            return 0
-    return bytes([4, id, t, mt, ms, st, 0, wm]) + goallist
+        b +=  goal.x.to_bytes(2, 'little') + goal.y.to_bytes(2, 'little') + a.to_bytes(2, 'little')
+    return bytes(b)
 
 def encodeMotorAcceleration(transspeed: int, transaccel: int,  turnspeed: int, turndirection: int, traveldirection: int = 0, priority:int = 0, duration: float = 0) -> bytes:
     ts = min(transspeed, 115)
@@ -121,6 +119,9 @@ def encodeLight(r: int, g: int, b: int, duration: float = 0) -> bytes:
 
 
 def encodeLightPattern(lights: List[Light], repeat: int = 0) -> bytes:
+    if len(lights) > 29:
+        print('too many light patterns')
+        return 0
     b = list([4, repeat, len(lights)])
     for light in lights:
         b += [min(int(light.duration * 100), 255), 1, 1, light.r, light.g, light.b]
@@ -136,6 +137,9 @@ def encodeSound(id: int, volume: int = 255) -> bytes:
 
 
 def encodeSoundByNotes(notes: List[Note], repeat: int = 0) -> bytes:
+    if len(notes) > 59:
+        print('too many notes')
+        return 0
     b = list([3, repeat, len(notes)])
     for note in notes:
         b += [min(int(note.duration * 100), 255), note.noteNumber, note.volume]
