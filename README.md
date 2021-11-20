@@ -4,6 +4,17 @@ My test project playing with Sony Toio. See https://www.sony.net/SonyInfo/design
 
 This runs on Linux with Python 3.6 or later. I am personally running this on Raspberry Pi 4 + Stretch.
 
+Modified features from original tomotoio/tomotoio
+* support toio core cube system software v02.0005 / BLE protocol v2.3.0
+* Motor control with target specified
+* Motor control with multiple targets specified
+* Motor contorl with acceleration specified
+* Posture angle detection
+* Magnetic sensor
+* Identification sensor notification frequency settings
+* Shake detection
+* motor speed information 
+
 # Getting Started
 
 1. Install the package with `pip`. If you want to just try, `pip install -e .` at the root directory will be convenient.
