@@ -7,12 +7,14 @@ from bluepy.btle import (ADDR_TYPE_RANDOM, BTLEInternalError, DefaultDelegate,
                          Peripheral, UUID)
 
 from .cube import Peer, PeerListenerFunc
+import time
 
 
 class BlePeer(Peer, DefaultDelegate):
     def __init__(self, address: str, iface: int = 0):
         super().__init__()
         self.peripheral: Peripheral = Peripheral(address, ADDR_TYPE_RANDOM, iface).withDelegate(self)
+        # self.peripheral.setMTU(92) # extend BLE packet size. to use Motor control with multiple targets specified. But not works well on Raspbian and Ubuntu18
         self.listeners: List[PeerListenerFunc] = list()
         self.notificationThread: Optional[Thread] = None
         self.writeQueue: Queue = Queue(100)

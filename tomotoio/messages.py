@@ -34,8 +34,18 @@ def decodeMotion(data: bytes) -> Motion:
             (_, isLevel, collision) = unpack("<BBB", data)
             return Motion(isLevel != 0, collision != 0, False, Orientation.INVALID)
         else:
-            (_, isLevel, collision, doubleTap, orientation) = unpack("<BBBBB", data)
-            return Motion(isLevel != 0, collision != 0, doubleTap != 0, Orientation(orientation))
+            (_, isLevel, collision, doubleTap, orientation, shake) = unpack("<BBBBBB", data)
+            return Motion(isLevel != 0, collision != 0, doubleTap != 0, Orientation(orientation), shake)
+    if data[0] == 0x02:
+        (_, status, strength, x, y, z) = unpack("<BBBbbb", data)
+        return MagneticForce(status, strength, x, y, z)
+    if data[0] == 0x03:
+        if data[1] == 0x01:
+            (_, angleType, roll, pitch, yaw) = unpack("<BBhhh", data)
+            return TiltEuler(roll, pitch, yaw)
+        if data[1] == 0x02:
+            (_, angleType, w, x, y, z) = unpack("<BBhhhh", data)
+            return TiltQuaternion(w, x, y, z)
 
     raise _wrongBytesError(data)
 
@@ -55,17 +65,63 @@ def decodeBattery(data: bytes) -> int:
 def _motorDirection(value: int) -> int:
     return 1 if value >= 0 else 2
 
+def decodeMotor(data: bytes) -> Union[Motor, MotorSpeed]:
+    if len(data) == 3:
+        if data[0] == MotorInfoType.SPEED:
+            return(MotorSpeed(data[0], data[1], data[2]))
+        else:
+            return(Motor(data[0], data[1], data[2]))
+    raise _wrongBytesError(data)
 
 def encodeMotor(left: int, right: int, duration: float = 0) -> bytes:
     d = min(int(duration * 100), 255)
     return bytes([2, 1, _motorDirection(left), abs(left), 2, _motorDirection(right), abs(right), d])
 
+def encodeMotorTarget(ctrlid: int, x: int, y: int, timeout: int = 0, movingtype: int = 0, maxspeed: int = 0, speedtype: int = 0,  angletype: int = 5, deg: int = 0) -> bytes:
+    id = min(ctrlid, 255)
+    t = min(timeout, 255)
+    mt = min(movingtype, 2)
+    ms = min(maxspeed, 255)
+    st = min(speedtype, 3)
+    a = (angletype << 13) | (deg & 0x1ffff)
+    return bytes([3, id, t, mt, ms, st, 0]) + x.to_bytes(2, 'little') + y.to_bytes(2, 'little') + a.to_bytes(2, 'little')
+
+def encodeMotorMultipleTargets(ctrlid: int, goals:List[Target], addwritemode: int = 0,  timeout: int = 0, movingtype: int = 0, maxspeed: int = 0, speedtype: int = 0) -> bytes:
+    if len(goals) > 29:
+        print('too many goal positions')
+        return 0
+    id = min(ctrlid, 255)
+    wm = min(addwritemode, 1)
+    t = min(timeout, 255)
+    mt = min(movingtype, 2)
+    ms = min(maxspeed, 255)
+    st = min(speedtype, 3)
+    b = list([4, id, t, mt, ms, st, 0, wm])
+    for goal in goals:
+        angletype = goal.angletype
+        deg = goal.deg
+        a = (angletype << 13) | (deg & 0x1ffff)
+        b +=  goal.x.to_bytes(2, 'little') + goal.y.to_bytes(2, 'little') + a.to_bytes(2, 'little')
+    return bytes(b)
+
+def encodeMotorAcceleration(transspeed: int, transaccel: int,  turnspeed: int, turndirection: int, traveldirection: int = 0, priority:int = 0, duration: float = 0) -> bytes:
+    ts = min(transspeed, 115)
+    ta = min(transaccel, 255)
+    tns = min(turnspeed, 65535)
+    tnd = min(turndirection, 1)
+    trvd = min(traveldirection, 1)
+    d = min(int(duration * 100), 255)
+    p = min(priority, 1)
+    return bytes([5, ts, ta]) + tns.to_bytes(2, 'little') + bytes([tnd, trvd, p, d])
 
 def encodeLight(r: int, g: int, b: int, duration: float = 0) -> bytes:
     return bytes([3, min(int(duration * 100), 255), 1, 1, r, g, b])
 
 
 def encodeLightPattern(lights: List[Light], repeat: int = 0) -> bytes:
+    if len(lights) > 29:
+        print('too many light patterns')
+        return 0
     b = list([4, repeat, len(lights)])
     for light in lights:
         b += [min(int(light.duration * 100), 255), 1, 1, light.r, light.g, light.b]
@@ -81,6 +137,9 @@ def encodeSound(id: int, volume: int = 255) -> bytes:
 
 
 def encodeSoundByNotes(notes: List[Note], repeat: int = 0) -> bytes:
+    if len(notes) > 59:
+        print('too many notes')
+        return 0
     b = list([3, repeat, len(notes)])
     for note in notes:
         b += [min(int(note.duration * 100), 255), note.noteNumber, note.volume]
@@ -108,5 +167,27 @@ def encodeConfigLevelThreshold(angle: int = 45) -> bytes:
 def encodeConfigCollisionThreshold(value: int = 7) -> bytes:
     return bytes([6, 0, min(value, 10)])
 
+
 def encodeConfigDoubleTapTiming(value: int = 5) -> bytes:
     return bytes([0x17, 0, min(value, 7)])
+
+
+def encodeConfigToioIDNotify(duration: float = 0.1, condition: int = 0xff) -> bytes:
+    return bytes([0x18, 0, min(int(duration * 100), 255), condition])
+
+
+def encodeConfigToioIDMissedNotify(delay: float = 0.7) -> bytes:
+    return bytes([0x19, 0, min(int(delay * 100), NotifyType.CHANGEDOR300MS)])
+
+
+def encodeConfigMagneticSensor(capability: int = MagneticSenseType.DISABLE, duration: float = 0, condition: int = NotifyType.CHANGED) -> bytes:
+    return bytes([0x1b, 0, capability,
+                  min(int(duration * 50), 255), condition])
+
+
+def encodeConfigMotorSpeedNotify(enable: int = 1) -> bytes:
+    return bytes([0x1c, 0, min(enable, 1)])
+
+
+def encodeConfigHighPrecisionTiltSensor(type: int = PostureType.EULER, duration: float = 0, condition = NotifyType.CHANGED) -> bytes:
+    return bytes([0x1d, 0, type, min(int(duration * 100), 255), condition])
