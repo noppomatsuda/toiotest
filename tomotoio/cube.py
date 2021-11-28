@@ -131,7 +131,7 @@ class Cube:
     def setConfigDoubleTapTiming(self, value: int):
         self._write(UUIDs.CONFIG, encodeConfigDoubleTapTiming(value))
 
-    def setConfigToioIDNotify(self, duration: int, condition):
+    def setConfigToioIDNotify(self, duration, condition):
         self._write(UUIDs.CONFIG, encodeConfigToioIDNotify(duration, condition))
 
     def setConfigToioIDMissedNotify(self, delay):
