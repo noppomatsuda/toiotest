@@ -1,5 +1,5 @@
 import logging as log
-from enum import Enum 
+from enum import IntEnum 
 from math import atan2, cos, degrees, hypot, radians, sin
 from threading import RLock
 from typing import Optional, Tuple, cast
@@ -13,7 +13,7 @@ AXLE_TRACK_UNITS = 26.6/ MILLIS_PER_UNIT
 MOTOR_DURATION = 1.5
 
 
-class MatType(Enum):
+class MatType(IntEnum):
     TOIO_COLLECTION_1 = 0
     TOIO_COLLECTION_2 = 1
     GESUNDROID = 2
@@ -60,13 +60,13 @@ class Mat:
             self.bottomRight = Vector(402, 358) 
         elif (matType >= MatType.DEVELOPPERS_PLAY_MAT_01) and (matType <= MatType.DEVELOPPERS_PLAY_MAT_04):
             self.topLeft = Vector(34, 35 + (matType.value - MatType.DEVELOPPERS_PLAY_MAT_01) * 216)
-            self.bottomRight = Vector(339, (matType.value - MatType.DEVELOPPERS_PLAY_MAT_01) * 216)
+            self.bottomRight = Vector(339, 250 + (matType.value - MatType.DEVELOPPERS_PLAY_MAT_01) * 216)
         elif (matType >= MatType.DEVELOPPERS_PLAY_MAT_05) and (matType <= MatType.DEVELOPPERS_PLAY_MAT_08):
             self.topLeft = Vector(340, 35 + (matType.value - MatType.DEVELOPPERS_PLAY_MAT_01) * 216)
-            self.bottomRight = Vector(644, (matType.value - MatType.DEVELOPPERS_PLAY_MAT_01) * 216)
+            self.bottomRight = Vector(644, 250 + (matType.value - MatType.DEVELOPPERS_PLAY_MAT_01) * 216)
         elif (matType >= MatType.DEVELOPPERS_PLAY_MAT_05) and (matType <= MatType.DEVELOPPERS_PLAY_MAT_08):
             self.topLeft = Vector(645, 35 + (matType.value - MatType.DEVELOPPERS_PLAY_MAT_01) * 216)
-            self.bottomRight = Vector(949, (matType.value - MatType.DEVELOPPERS_PLAY_MAT_01) * 216)
+            self.bottomRight = Vector(949, 250 + (matType.value - MatType.DEVELOPPERS_PLAY_MAT_01) * 216)
         else:  # simple play mat
             self.topLeft = Vector(98, 142)
             self.bottomRight = Vector(402, 358) 

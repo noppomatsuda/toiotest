@@ -4,7 +4,7 @@ from functools import partial
 from time import sleep
 
 from utils import createCubes, releaseCubes, Cube
-from utils import PostureType, NotifyType, TargetPointAngleType, MovementType, MotorInfoType
+from utils import PostureType, NotifyType, TargetPointAngleType, MovementType, MotorInfoType, Target
 from tomotoio.navigator import Mat
 
 mat = Mat()
@@ -31,8 +31,8 @@ try:
     cube.setMotorWithTarget(0, mat_cx, mat_cy, 50)
     sleep(3)
     # x, y, AngleType, deg  
-    goals = [(mat_cx - 100, mat_cy -100, TargetPointAngleType.ABSOLUTE, 0), 
-             (mat_cx - 100, mat_cy +100, TargetPointAngleType.ABSOLUTE, 90)]
+    goals = [Target(mat_cx - 100, mat_cy -100, TargetPointAngleType.ABSOLUTE, 0), 
+             Target(mat_cx - 100, mat_cy +100, TargetPointAngleType.ABSOLUTE, 90)]
 
     cube.setMotorWithMultipleTargets(1, goals, 30)
     while True:

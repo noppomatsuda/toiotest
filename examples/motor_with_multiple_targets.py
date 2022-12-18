@@ -4,19 +4,19 @@ from functools import partial
 from time import sleep
 
 from utils import createCubes, releaseCubes, Cube
-from utils import PostureType, NotifyType, TargetPointAngleType, MovementType, MotorInfoType
+from utils import PostureType, NotifyType, TargetPointAngleType, MovementType, MotorInfoType, Target
 from tomotoio.navigator import Mat
 
 mat = Mat()
 mat_cx = int(mat.center.x)
 mat_cy = int(mat.center.y)
 # x, y, AngleType, deg  
-goals = [(mat_cx, mat_cy, TargetPointAngleType.NO_ROTATION, 0),
-            (mat_cx - 50, mat_cy -50, TargetPointAngleType.NO_ROTATION, 0), 
-            (mat_cx - 50, mat_cy +50, TargetPointAngleType.NO_ROTATION, 0),
-            (mat_cx + 50, mat_cy +50, TargetPointAngleType.NO_ROTATION, 0),
-            (mat_cx + 50, mat_cy -50, TargetPointAngleType.NO_ROTATION, 0),
-            (mat_cx - 50, mat_cy -50, TargetPointAngleType.NO_ROTATION, 0)]
+goals = [Target(mat_cx, mat_cy, TargetPointAngleType.NO_ROTATION, 0),
+            Target(mat_cx - 50, mat_cy -50, TargetPointAngleType.NO_ROTATION, 0), 
+            Target(mat_cx - 50, mat_cy +50, TargetPointAngleType.NO_ROTATION, 0),
+            Target(mat_cx + 50, mat_cy +50, TargetPointAngleType.NO_ROTATION, 0),
+            Target(mat_cx + 50, mat_cy -50, TargetPointAngleType.NO_ROTATION, 0),
+            Target(mat_cx - 50, mat_cy -50, TargetPointAngleType.NO_ROTATION, 0)]
 index = 0
 
 cubes = createCubes()
@@ -30,7 +30,7 @@ try:
             # add next target position
             if index < len(goals):
                 cube.setMotorWithMultipleTargets(index, [goals[index]], 30)
-                log.debug("add next target position %s: %s, %s", index, goals[index][0], goals[index][1])
+                log.debug("add next target position %s: %s, %s", index, goals[index].x, goals[index].y)
                 index = index +1
             else:
                 log.debug("core cube reached to final target.")
