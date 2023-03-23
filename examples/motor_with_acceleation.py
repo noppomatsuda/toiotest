@@ -21,21 +21,22 @@ try:
     cube.motor.enableNotification()
 
     log.debug("forward")
-    cube.setMotorWithAcceleration(50, 10)
+    cube.setMotorWithAcceleration(50, 100)
     sleep(1)
     log.debug("backward")
-    cube.setMotorWithAcceleration(50, 10, DirectionType.BACKWARD)
+    cube.setMotorWithAcceleration(50, 100, DirectionType.BACKWARD)
     sleep(2)
     log.debug("forward and turn")
-    cube.setMotorWithAcceleration(50, 10, DirectionType.FORWARD, 45)
+    cube.setMotorWithAcceleration(50, 100, DirectionType.FORWARD, 45)
     sleep(2)
     log.debug("backward and turn")
-    cube.setMotorWithAcceleration(50, 10, DirectionType.BACKWARD, 45, DirectionType.BACKWARD)
+    cube.setMotorWithAcceleration(50, 100, DirectionType.BACKWARD, 45, DirectionType.BACKWARD)
     sleep(2)
     cube.setMotor(0,0)
 
     while True:
         sleep(1)
+        cube.setMotorWithAcceleration(50, 10, DirectionType.FORWARD, 45)
 
 finally:
     releaseCubes(cubes)

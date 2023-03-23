@@ -97,6 +97,27 @@ class Cube:
 
     def setMotor(self, left: float, right: float, duration: float = 0):
         self._write(UUIDs.MOTOR, encodeMotor(int(left), int(right), duration))
+    #duration=motorの制御時間
+    
+    def Straight(self, length):
+        self.setMotor(50, 50, 0.149 * length)
+        sleep(1 + length / 10.0)
+
+    def turnLeft(self, rad):
+        self.setMotor(-50, 50, 0.149 * rad / 90.0)
+        sleep(2)
+    
+    def turnRight(self, rad):
+        self.setMotor(50, -50, 0.149 * rad / 90.0)
+        sleep(2)
+    
+    def turnBack(self):
+        self.turnLeft(90)
+    
+    def turn(self, dur):
+        self.setMotor(-50, 50, dur)
+        sleep(dur*2 + 0.2)
+    
 
     def setMotorWithTarget(self, ctrlid: int, x: int, y: int, maxspeed: int = 10, speedtype: int = SpeedChangeType.CONSTANT, movingtype: int = MovementType.ROTATING, angletype: int = TargetPointAngleType.NO_ROTATION, deg: int = 0, timeout: int = 0):
       self._write(UUIDs.MOTOR, encodeMotorTarget(ctrlid, x, y, timeout, movingtype, maxspeed, speedtype, angletype, deg))

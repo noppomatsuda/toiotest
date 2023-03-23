@@ -1,7 +1,7 @@
 file=toio-cubes.txt
 tmpfile=/tmp/$file.tmp
 
-if (sudo `which python` tomotoio/scanner.py $* > $tmpfile)
+if (sudo `which python3` tomotoio/scanner.py $* > $tmpfile)
 then
   if [ -s $tmpfile ]
   then
