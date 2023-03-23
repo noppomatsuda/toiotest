@@ -1,3 +1,5 @@
+**This project is forked from https://github.com/kenichi884/tomotoio**
+
 # Description
 
 My test project playing with Sony Toio. See https://www.sony.net/SonyInfo/design/stories/toio/.
